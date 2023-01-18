@@ -10,13 +10,7 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
-
-// The GraphQL schema
-const typeDefs = `#graphql
-  type Query {
-    hello: String
-  }
-`;
+import typeDefs from "./graphql/typeDefs";
 
 // A map of functions which return data for the schema.
 const resolvers = {
@@ -30,7 +24,7 @@ const main = async () => {
 
   // Set up Apollo Server
   const server = new ApolloServer({
-    typeDefs,
+    typeDefs: typeDefs,
     resolvers,
     csrfPrevention: true,
     cache: "bounded",
