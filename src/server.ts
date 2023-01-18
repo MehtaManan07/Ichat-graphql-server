@@ -1,6 +1,8 @@
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import dotenv from "dotenv";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault,
@@ -11,21 +13,20 @@ import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
 import typeDefs from "./graphql/typeDefs";
+import resolvers from "./graphql/resolvers";
 
-// A map of functions which return data for the schema.
-const resolvers = {
-  Query: {
-    hello: () => "world",
-  },
-};
 const main = async () => {
+  dotenv.config();
+  const schema = makeExecutableSchema({
+    typeDefs,
+    resolvers,
+  });
   const app = express();
   const httpServer = http.createServer(app);
 
   // Set up Apollo Server
   const server = new ApolloServer({
-    typeDefs: typeDefs,
-    resolvers,
+    schema,
     csrfPrevention: true,
     cache: "bounded",
     plugins: [
