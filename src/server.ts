@@ -15,7 +15,8 @@ import bodyParser from "body-parser";
 import typeDefs from "./graphql/typeDefs";
 import resolvers from "./graphql/resolvers";
 import { getSession } from "next-auth/react";
-import { GraphQLContext } from "./utils/types";
+import { GraphQLContext, Session } from "./utils/types";
+import { PrismaClient } from "@prisma/client";
 const main = async () => {
   dotenv.config();
   const schema = makeExecutableSchema({
@@ -28,6 +29,9 @@ const main = async () => {
     origin: process.env.CLIENT_ORIGIN,
     credentials: true,
   };
+
+  const prisma = new PrismaClient();
+  // const pubsub = something
 
   // Set up Apollo Server
   const server = new ApolloServer({
@@ -48,9 +52,9 @@ const main = async () => {
     bodyParser.json(),
     expressMiddleware(server, {
       context: async ({ req }): Promise<GraphQLContext> => {
-        const session = await getSession({ req });
+        const session = (await getSession({ req })) as Session;
         console.log({ session });
-        return { session };
+        return { session, prisma };
       },
     })
   );
