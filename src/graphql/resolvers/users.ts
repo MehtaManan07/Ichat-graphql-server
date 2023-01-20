@@ -3,8 +3,10 @@ const resolvers = {
     searchUsers: () => {},
   },
   Mutation: {
-    createUsername: () => {},
+    createUsername: () => {
+      console.log('ka loda')
+    },
   },
-  Subscription: {},
+  // Subscription: {},
 };
 export default resolvers

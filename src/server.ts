@@ -20,6 +20,7 @@ const main = async () => {
   const schema = makeExecutableSchema({
     typeDefs,
     resolvers,
+    
   });
   const app = express();
   const httpServer = http.createServer(app);
@@ -42,11 +43,17 @@ const main = async () => {
   });
   await server.start();
 
-  app.use(cors(corsOptions), bodyParser.json(), expressMiddleware(server));
+  app.use(
+    cors<cors.CorsRequest>(corsOptions),
+    bodyParser.json(),
+    expressMiddleware(server)
+  );
 
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: 4000 }, resolve)
   );
-  console.log(`🚀 Server ready at http://localhost:4000`);
+  console.log(
+    `🚀 Server ready at http://localhost:4000`
+  );
 };
 main().catch((err) => console.log(err));
