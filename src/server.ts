@@ -23,6 +23,10 @@ const main = async () => {
   });
   const app = express();
   const httpServer = http.createServer(app);
+  const corsOptions = {
+    origin: process.env.CLIENT_ORIGIN,
+    credentials: true,
+  };
 
   // Set up Apollo Server
   const server = new ApolloServer({
@@ -38,7 +42,7 @@ const main = async () => {
   });
   await server.start();
 
-  app.use(cors(), bodyParser.json(), expressMiddleware(server));
+  app.use(cors(corsOptions), bodyParser.json(), expressMiddleware(server));
 
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: 4000 }, resolve)
